@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#20251f">
+  <meta name="description" content="Личная мастерская идей и DIY-проектов">
+  <title>DIY Сарайчик</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark" aria-hidden="true">🛠️</div>
+    <div class="brand">
+      <h1>DIY Сарайчик</h1>
+      <p>Место для идей, которые пригодятся</p>
+    </div>
+    <button id="installBtn" class="icon-btn hidden" type="button" title="Установить приложение" aria-label="Установить приложение">＋</button>
+  </header>
+
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">ТВОЯ МАСТЕРСКАЯ</p>
+        <h2>Не потеряй<br>хорошую идею.</h2>
+        <p class="hero-copy">Сохрани сейчас. Разберёшься позже.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">💡</div>
+    </section>
+
+    <section class="quick-add panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">БЫСТРАЯ ЗАПИСЬ</p>
+          <h2>Что сохраняем?</h2>
+        </div>
+        <span class="tiny-tag">~ 10 секунд</span>
+      </div>
+      <form id="ideaForm">
+        <label for="ideaTitle">Название <span class="muted">(необязательно)</span></label>
+        <input id="ideaTitle" name="title" maxlength="120" placeholder="Например, настольная лампа">
+
+        <label for="ideaSource">Ссылка на источник</label>
+        <input id="ideaSource" name="source" type="url" inputmode="url" placeholder="https://…" autocomplete="url">
+
+        <label for="ideaNote">Что зацепило или что придумал?</label>
+        <textarea id="ideaNote" name="note" rows="3" maxlength="1500" placeholder="Можно коротко описать идею своими словами…"></textarea>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="ideaCategory">Категория</label>
+            <select id="ideaCategory" name="category">
+              <option value="Не разобрано">Не разобрано</option>
+              <option value="3D-печать и CAD">3D-печать и CAD</option>
+              <option value="Электроника и Arduino">Электроника и Arduino</option>
+              <option value="Механизмы и DIY">Механизмы и DIY</option>
+              <option value="Дом и мастерская">Дом и мастерская</option>
+              <option value="Программирование и ИИ">Программирование и ИИ</option>
+              <option value="Другое">Другое</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ideaPriority">Приоритет</label>
+            <select id="ideaPriority" name="priority">
+              <option value="Сохранить">Сохранить</option>
+              <option value="Скоро">Скоро</option>
+              <option value="Когда-нибудь">Когда-нибудь</option>
+            </select>
+          </div>
+        </div>
+        <button class="primary-btn" type="submit"><span>＋</span> Сохранить идею</button>
+        <p class="form-hint">Пока идеи хранятся в этом браузере на этом устройстве.</p>
+      </form>
+    </section>
+
+    <section class="collection">
+      <div class="section-heading collection-heading">
+        <div>
+          <p class="eyebrow">ТВОЯ КОЛЛЕКЦИЯ</p>
+          <h2>Сарайчик <span id="ideaCount" class="count">0</span></h2>
+        </div>
+        <button id="toolsBtn" class="secondary-btn" type="button">Данные ↗</button>
+      </div>
+
+      <div class="search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Найти идею…" aria-label="Поиск по идеям">
+      </div>
+
+      <nav class="filters" aria-label="Фильтр по статусу">
+        <button class="filter-btn active" data-status="Все" type="button">Все</button>
+        <button class="filter-btn" data-status="Входящие" type="button">Входящие</button>
+        <button class="filter-btn" data-status="На полке" type="button">На полке</button>
+        <button class="filter-btn" data-status="На верстаке" type="button">На верстаке</button>
+        <button class="filter-btn" data-status="Готово" type="button">Готово</button>
+      </nav>
+
+      <div id="ideaList" class="idea-list"></div>
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>Пока здесь пусто</h3>
+        <p>Сохрани первую находку — пусть хорошим идеям будет где жить.</p>
+      </div>
+    </section>
+
+    <section id="dataPanel" class="panel data-panel hidden">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">РЕЗЕРВНАЯ КОПИЯ</p>
+          <h2>Твои данные</h2>
+        </div>
+        <button id="closeToolsBtn" class="icon-btn" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <p class="muted small">Экспортируй копию, чтобы не потерять коллекцию. Импорт объединяет данные по ID и не удаляет существующие карточки.</p>
+      <div class="data-actions">
+        <button id="exportBtn" class="secondary-btn" type="button">Скачать JSON</button>
+        <label class="secondary-btn file-label" for="importFile">Импортировать JSON</label>
+        <input id="importFile" type="file" accept="application/json,.json" class="visually-hidden">
+      </div>
+      <button id="clearBtn" class="danger-btn" type="button">Удалить все идеи на этом устройстве</button>
+    </section>
+
+    <footer>
+      <span>Сделано для идей, а не для бюрократии.</span>
+      <span id="storageLabel">Локальное хранилище</span>
+    </footer>
+  </main>
+
+  <dialog id="editDialog" class="edit-dialog">
+    <form id="editForm" method="dialog">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">КАРТОЧКА ИДЕИ</p>
+          <h2>Редактирование</h2>
+        </div>
+        <button id="cancelEditBtn" class="icon-btn" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <input type="hidden" id="editId">
+      <label for="editTitle">Название</label>
+      <input id="editTitle" maxlength="120" required>
+      <label for="editSource">Ссылка</label>
+      <input id="editSource" type="url" inputmode="url">
+      <label for="editNote">Описание / заметка</label>
+      <textarea id="editNote" rows="4" maxlength="3000"></textarea>
+      <div class="form-row">
+        <div class="field">
+          <label for="editCategory">Категория</label>
+          <select id="editCategory">
+            <option>Не разобрано</option><option>3D-печать и CAD</option><option>Электроника и Arduino</option>
+            <option>Механизмы и DIY</option><option>Дом и мастерская</option><option>Программирование и ИИ</option><option>Другое</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="editPriority">Приоритет</label>
+          <select id="editPriority"><option>Сохранить</option><option>Скоро</option><option>Когда-нибудь</option></select>
+        </div>
+      </div>
+      <label for="editStatus">Статус</label>
+      <select id="editStatus"><option>Входящие</option><option>На полке</option><option>На верстаке</option><option>Готово</option></select>
+      <label for="editTags">Теги <span class="muted">(через запятую)</span></label>
+      <input id="editTags" placeholder="например: подарок, Arduino, печать">
+      <div class="dialog-actions">
+        <button id="deleteIdeaBtn" class="danger-btn" type="button">Удалить</button>
+        <button class="primary-btn" type="submit">Сохранить изменения</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
